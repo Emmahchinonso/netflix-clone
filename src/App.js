@@ -1,25 +1,48 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { Home, Browse, Signin, Signup } from "./pages";
+import * as Routes from "./constants/routes";
+import { IsUserRedirect, ProtectedRoute } from "./helpers/routes";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	const user = {};
+
+	return (
+		<Router>
+			<Switch>
+				<IsUserRedirect
+					exact
+					user={user}
+					loggedInPath={Routes.BROWSE}
+					path={Routes.SIGN_IN}
+				>
+					<Signin />
+				</IsUserRedirect>
+
+				<IsUserRedirect
+					exact
+					user={user}
+					loggedInPath={Routes.BROWSE}
+					path={Routes.SIGN_UP}
+				>
+					<Signup />
+				</IsUserRedirect>
+
+				<ProtectedRoute exact path={Routes.BROWSE} user={user}>
+					<Browse />
+				</ProtectedRoute>
+
+				<IsUserRedirect
+					exact
+					loggedInPath={Routes.BROWSE}
+					user={user}
+					path={Routes.HOME}
+				>
+					<Home />
+				</IsUserRedirect>
+			</Switch>
+		</Router>
+	);
 }
 
 export default App;
